@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreenAI Comparometer</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    :root {
+      --primary: #4caf50; /* Bright green */
+      --primary-light: #80e27e;
+      --primary-dark: #087f23;
+      --background: #121212;
+      --card-bg: #1e1e1e;
+      --text: #e0e0e0;
+      --accent: #ffc107; /* Amber/yellow */
+      --muted-text: #aaaaaa;
+      --border-color: #333333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: default;
+      color: #dcedc8;
+      user-select: none;
+    }
+
+    .logo-img {
+      height: 48px;
+      width: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      animation: spinIn 1s ease-in-out;
+      filter: drop-shadow(0 0 2px var(--primary));
+      background: var(--card-bg);
+    }
+
+    .logo-img:hover {
+      transform: rotate(10deg) scale(1.1);
+      box-shadow: 0 0 12px var(--primary);
+    }
+
+    @keyframes spinIn {
+      from {
+        transform: rotate(-180deg) scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+      }
+    }
+
+    nav ul {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      background-color: rgba(255 193 7 / 0.15);
+    }
+
+    .hero {
+      background: url('https://www.transparenttextures.com/patterns/green-dust-and-scratches.png');
+      background-color: #0b1f0b;
+      padding: 4rem 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--text);
+      user-select: none;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .hero-text {
+      max-width: 500px;
+      text-align: left;
+    }
+
+    .hero-text h1 {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 6px var(--primary-light);
+    }
+
+    .hero-text p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: auto 0;
+      color: var(--muted-text);
+      line-height: 1.5;
+    }
+
+    .hero-image img {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px var(--primary);
+      border: 3px solid var(--primary-light);
+      background: var(--card-bg);
+    }
+
+    .about,
+    .contact,
+    .team {
+      padding: 3rem 2rem;
+      background: var(--card-bg);
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 4rem auto;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+      color: var(--text);
+    }
+
+    .about h2,
+    .contact h2,
+    .team h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 6px var(--primary-light);
+    }
+
+    .about p {
+      color: var(--muted-text);
+      font-size: 1rem;
+      line-height: 1.5;
+      text-align: justify;
+    }
+
+    .about-logo {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 15px var(--primary-light);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      background: var(--background);
+    }
+
+    .about h3 {
+      color: var(--primary-light);
+      font-style: italic;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 6px var(--primary-light);
+    }
+
+    .team {
+      background: linear-gradient(135deg, #183618 0%, #2f4f2f 100%);
+      border-top: 1px solid #1b3a1b;
+      border-bottom: 1px solid #1b3a1b;
+      max-width: 1100px;
+    }
+
+    .team-members {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .member {
+      background-color: #233223;
+      padding: 1.5rem;
+      border-radius: 12px;
+      max-width: 200px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+      text-align: center;
+      color: var(--text);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .member:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px var(--primary-light);
+      cursor: default;
+    }
+
+    .member img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 10px var(--primary-light);
+      margin-bottom: 1rem;
+      background: var(--background);
+    }
+
+    .member h4 {
+      margin-bottom: 0.25rem;
+      color: var(--primary-light);
+    }
+
+    .member p {
+      font-size: 0.9rem;
+      color: var(--muted-text);
+      line-height: 1.3;
+    }
+
+    .tools {
+      max-width: 1100px;
+      margin: 0 auto 4rem auto;
+      padding: 2rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      color: var(--text);
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+      padding: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .tool-card:hover {
+      box-shadow: 0 12px 30px var(--primary-light);
+    }
+
+    .tool-logo {
+      height: 72px;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 2px var(--primary));
+      border-radius: 12px;
+      background: var(--background);
+      padding: 8px;
+      object-fit: contain;
+      max-width: 100%;
+      max-height: 72px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tool-name {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+      text-shadow: 0 0 6px var(--primary-light);
+    }
+
+    .tool-desc {
+      flex-grow: 1;
+      font-size: 0.95rem;
+      color: var(--muted-text);
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+    }
+
+    .tool-btn {
+      background: var(--primary);
+      color: #121212;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 0 10px var(--primary-light);
+      user-select: none;
+    }
+
+    .tool-btn:hover {
+      background: var(--primary-light);
+      color: var(--background);
+    }
+
+    .contact form {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact label {
+      font-weight: 600;
+      text-align: left;
+      color: var(--primary-light);
+      text-shadow: 0 0 4px var(--primary);
+    }
+
+    .contact input,
+    .contact textarea {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--primary-dark);
+      background: #2a2a2a;
+      color: var(--text);
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+
+    .contact input:focus,
+    .contact textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 8px var(--primary-light);
+      background: #222;
+    }
+
+    .contact button {
+      background: var(--accent);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      color: #121212;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 0 12px var(--accent);
+      user-select: none;
+    }
+
+    .contact button:hover {
+      background: #ffca28;
+      color: #000;
+      box-shadow: 0 0 16px #ffca28;
+    }
+
+    footer {
+      background: var(--primary-dark);
+      color: #c8e6c9;
+      padding: 2rem 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--primary-light);
+      text-decoration: underline;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      .hero-content {
+        flex-direction: column;
+      }
+
+      nav ul {
+        justify-content: center;
+        margin-top: 1rem;
+      }
+    }
+     /* Footer container */
+footer {
+  background-color: #1e1e1e;  /* Dark card background */
+  color: #e0e0e0;             /* Light text */
+  padding: 40px 20px 20px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-top: 2px solid #4caf50; /* Brand green top border */
+  box-shadow: inset 0 10px 20px -10px #00000088;
+}
+
+/* Container inside footer */
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* Each footer section */
+.footer-section {
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+
+/* Footer section headings */
+.footer-section h3 {
+  font-size: 1.3rem;
+  color: #80e27e; /* Lighter green */
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  border-bottom: 2px solid #4caf50;
+  padding-bottom: 5px;
+}
+
+/* Lists inside footer */
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Footer main container */
+.footer {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  padding: 50px 20px 30px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-top: 3px solid #4caf50; /* brand green */
+  box-shadow: inset 0 10px 30px -10px #000000cc;
+}
+
+/* Footer containers (flex wrappers) */
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+/* Each footer section */
+.footer-section {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+/* Dark theme background */
+.tools-section {
+    background-color: #0d1117;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Section title */
+.tools-section h2 {
+    font-size: 2.5rem;
+    color: #58a6ff;
+    margin-bottom: 40px;
+    text-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+}
+
+/* Grid layout for cards */
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+/* Tool card style */
+.tool-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tool-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(88, 166, 255, 0.3);
+    border-color: #58a6ff;
+}
+
+/* Tool logo */
+.tool-logo {
+    max-width: 100px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+/* Tool title */
+.tool-card h3 {
+    margin: 12px 0 8px;
+    font-size: 1.3rem;
+    color: #f0f6fc;
+}
+
+/* Description text */
+.tool-card p {
+    font-size: 0.95rem;
+    color: #8b949e;
+}
+
+/* Launch button link */
+.tool-launch {
+    display: inline-block;
+    background: #238636;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 12px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tool-launch:hover {
+    background: #2ea043;
+    box-shadow: 0 0 10px rgba(46, 160, 67, 0.7);
+}
+
+     html {
+      scroll-behavior: smooth;
+             }
+
+/* Section titles */
+.footer-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: #80e27e; /* lighter green */
+  border-bottom: 2px solid #4caf50;
+  padding-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+}
+
+/* Newsletter form styles */
+.newsletter-form {
+  display: flex;
+  gap: 10px;
+}
+
+.newsletter-form input[type="email"] {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.newsletter-form input[type="email"]::placeholder {
+  color: #999;
+}
+
+.newsletter-form button {
+  background-color: #4caf50;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.newsletter-form button:hover,
+.newsletter-form button:focus {
+  background-color: #369c3f;
+  outline: none;
+}
+
+/* Contact details */
+.footer-section p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+/* Social icons container */
+.social-icons {
+  display: flex;
+  gap: 20px;
+}
+
+/* Social icons links */
+.social-icons a {
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover,
+.social-icons a:focus {
+  color: #4caf50;
+  outline: none;
+}
+
+/* Quick Links, Legal, Get Involved lists */
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 12px;
+}
+
+.footer-section ul li a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover,
+.footer-section ul li a:focus {
+  color: #4caf50;
+  text-decoration: underline;
+  outline: none;
+}
+
+/* Footer bottom copyright bar */
+.footer-bottom {
+  border-top: 1px solid #333333;
+  text-align: center;
+  padding: 15px 0 5px 0;
+  font-size: 0.9rem;
+  color: #999;
+  font-style: italic;
+  user-select: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .footer-section {
+    min-width: 100%;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="images\Project Logo.jpg" alt="GreenAI Logo" class="logo-img" />
+      GreenAI Comparometer
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="http://localhost:8501">Login</a></li>
+        <li><a href="http://localhost:8501">Sign Up</a></li>
+        <li><a href="http://localhost:8505" target="_blank" class="camparison">🚀 Comparison</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>GreenAI Comparometer</h1>
+        <p>Your unified platform to measure, compare, and reduce the carbon footprint of machine learning projects — with multiple industry-leading tools in one place.</p>
+      </div>
+      <div class="hero-image">
+        <img
+          src="images\empowering-ai.jpg"
+          alt="Green Technology"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+   <section class="tools-section" id="tools">
+        <h2>Our Tools</h2>
+        <div class="tool-grid">
+            <div class="tool-card">
+                <img src="images/eco2ai.png" alt="eco2AI Logo" class="tool-logo"/>
+                <a href="http://localhost:8502" target="_blank" class="tool-launch">🚀 Launch eco2AI Tool</a>
+                <h3>eco2AI</h3>
+                <p>Python library for real-time CO₂ tracking and energy monitoring.</p>
+            </div>
+            <div class="tool-card">
+                <img src="images/codecarbon_logo.png" alt="eco2AI Logo" class="tool-logo"/>
+                <a href="http://localhost:8503" target="_blank" class="tool-launch">🚀 Launch CodeCarbon Tool</a>
+                <h3>CodeCarbon</h3>
+                <p>Lightweight emissions tracker based on location & hardware.</p>
+            </div>
+            <div class="tool-card">
+                <img src="images/carbontracker.jpg" alt="eco2AI Logo" class="tool-logo"/>
+                <a href="http://localhost:8504" target="_blank" class="tool-launch">🚀 Launch CarbonTracker Tool</a>
+                <h3>CarbonTracker</h3>
+                <p>Tool for monitoring training efficiency and CO₂ emissions.</p>
+            </div>
+            <div class="tool-card">
+                <img src="images/green-algorithmslogo.jpeg" alt="eco2AI Logo" class="tool-logo"/>
+                <a href="https://green-algorithms.org/" target="_blank" class="tool-launch">🌐 Open Green Algorithms</a>
+                <h3>Green Algorithms</h3>
+                <p>Web-based estimation of emissions for ML workloads.</p>
+            </div>
+            <div class="tool-card">
+                <img src="images/MLco2_impactCalculatorlogo.jpeg" alt="eco2AI Logo" class="tool-logo"/>
+                <a href="https://mlco2.github.io/impact/" target="_blank" class="tool-launch">🌐 Open ML CO₂ Impact</a>
+                <h3>ML CO₂ Impact</h3>
+                <p>Compare carbon impact of cloud vs local training setups.</p>
+            </div>
+        </div>
+    </section>
+  <section id="about" class="about">
+    <img src="images\Project Logo.jpg" alt="GreenAI Logo" class="about-logo" />
+    <h2>About Us</h2>
+    <h3>Empowering sustainable AI</h3>
+    <p>
+      GreenAI Comparometer is a cutting-edge platform designed to help machine learning practitioners, researchers, and organizations evaluate and compare the carbon footprint of their AI projects. By integrating multiple leading emission estimation tools, we enable a comprehensive approach to building greener, more sustainable AI.
+    </p>
+  </section>
+
+  <section id="team" class="team">
+    <h2>Meet Our Team</h2>
+    <div class="team-members">
+      <div class="member">
+        <img src="images\Utkarsh.jpg" alt="Team Member 1" />
+        <h4>Utkarsh Misra</h4>
+         <p><strong>Backend & Database Engineer</strong></p>
+        <p>Designed and implemented the backend architecture, managed database integration, and streamlined results storage for efficiency.</p>
+      </div>
+      <div class="member">
+        <img src="images\Pushpita.jpg" alt="Team Member 2" />
+        <h4>Pushpita Biswas</h4>
+        <p><strong>Frontend & UI Designer</strong></p>
+        <p>Handled UI/UX design, homepage styling, and tool integration, ensuring a clean, professional, and visually appealing interface.</p>
+      </div>
+      <div class="member">
+        <img src="images\Priangshu.jpg" alt="Team Member 3" />
+        <h4>Prianshu Paul</h4>
+        <p><strong>Research & Algorithms Specialist</strong></p>
+        <p>Focused on ML carbon footprint tools (eco2AI, CodeCarbon, CarbonTracker), ensuring accurate results and report generation.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <form>
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Your email" required />
+
+      <label for="message">Message</label>
+      <textarea id="message" rows="5" placeholder="Write your message here..." required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+     <div class="contact-info">
+      
+      </div>
+    </div>
+  </div>
+</section>
+
+
+    <div class="footer">
+                        <div class="footer-container">
+                <div class="footer-section">
+                    <h3>Subscribe to Newsletter</h3>
+                    <form class="newsletter-form">
+                    <input type="email" placeholder="Your Email" required />
+                    <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: greenai708448@gmail.com</p>
+                    <p>Phone: +91 6394488260</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-icons">
+                    <a href="https://www.linkedin.com/in/utkarsh-misra-161538269/"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/UHM1912/Green-AI-Comparometer"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/misra_utka1912"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                </div>
+
+                <div class="footer-bottom">
+                </div>
+
+                        <div class="footer-container">
+                            <div class="footer-section">
+                                <h3>Quick Links</h3>
+                                <ul>
+                                    <li><a href="#about">About Us</a></li>
+                                    <li><a href="#tools">Our Technology</a></li>
+                                    <li><a href="#">Real-Time Dashboard</a></li>
+                                    <li><a href="#">Research & Publications</a></li>
+                                    <li><a href="#">Submit a Report</a></li>
+                                    <li><a href="#contact">Contact Us</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Legal</h3>
+                                <ul>
+                                    <li><a href="#">Terms & Conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                    <li><a href="#">Data Usage</a></li>
+                                    <li><a href="#">Accessibility</a></li>
+                                    <li><a href="#">Disclaimer</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-section">
+                                <h3>Get Involved</h3>
+                                <ul>
+                                    <li><a href="#">Careers / Internships</a></li>
+                                    <li><a href="#">Collaborate With Us</a></li>
+                                    <li><a href="#">Support Our Mission</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="footer-bottom">
+                            &copy; 2025 GreenAI Comparometer — Built by Team Green Coders
+                        </div>
+                    </div>
+                </body>
+                </html>
