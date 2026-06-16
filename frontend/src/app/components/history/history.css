@@ -1,0 +1,258 @@
+.history-container {
+  min-height: 100vh;
+  background-color: #FAF9F6;
+  color: #2C3531;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Nav Header */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E6E3;
+  box-shadow: 0 2px 12px rgba(110, 136, 123, 0.04);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  width: 28px;
+  height: 28px;
+  color: #6E887B;
+}
+
+.logo h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #5E7468;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+}
+
+.user-greeting {
+  color: #7A8E83;
+}
+
+.nav-btn, .refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #C8D3CC;
+  background: #FFFFFF;
+  color: #5E7468;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover, .refresh-btn:hover {
+  background: #E8EFEA;
+  border-color: #A7BEB1;
+}
+
+.logout-btn {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: #9B1C1C;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.logout-btn:hover {
+  background: #FDF2F2;
+}
+
+/* Main Section */
+.history-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.history-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E2E6E3;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(110, 136, 123, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #F1F5F2;
+  padding-bottom: 15px;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5E7468;
+  margin: 0;
+}
+
+/* Table styling */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.history-table th {
+  background-color: #E8EFEA;
+  color: #5E7468;
+  font-weight: 600;
+  padding: 14px 18px;
+  border-bottom: 1px solid #C8D3CC;
+}
+
+.history-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #E2E6E3;
+  color: #2C3531;
+}
+
+.history-table tbody tr:hover {
+  background-color: #FAF9F6;
+}
+
+/* Saving cell layout */
+.saving-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.saving-cell span:first-child {
+  color: #555555;
+  font-size: 12px;
+}
+
+.badge {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 2px 8px;
+  background-color: #FDF2F2;
+  color: #9B1C1C;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
+.badge.positive {
+  background-color: #E6F4EA;
+  color: #137333;
+}
+
+/* Row Action button */
+.row-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #6E887B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.row-download-btn:hover {
+  background: #5E7468;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-state p {
+  color: #7A8E83;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #6E887B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #5E7468;
+}
+
+.loading-state {
+  padding: 40px;
+  font-size: 14px;
+  color: #7A8E83;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #C8D3CC;
+  border-radius: 50%;
+  border-top-color: #6E887B;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 25px;
+  text-align: left;
+  line-height: 1.4;
+  background-color: #FDF2F2;
+  color: #9B1C1C;
+  border: 1px solid #FDE8E8;
+}

@@ -1,0 +1,284 @@
+<div class="workspace-container">
+  <header class="app-header">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Z"/>
+        <path d="M9 22v-4H5v-4H1"/>
+      </svg>
+      <h1>EcoRefactor</h1>
+    </div>
+    <div class="user-menu">
+      <span class="user-greeting">Welcome, <b>{{ authService.currentUser()?.name }}</b></span>
+      <button class="nav-btn" (click)="goToHistory()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        History
+      </button>
+      <button class="logout-btn" (click)="logout()">Log Out</button>
+    </div>
+  </header>
+
+  <main class="workspace-main">
+    @if (errorMsg()) {
+      <div class="alert alert-error animate-slide-down">
+        <b>Error:</b> {{ errorMsg() }}
+      </div>
+    }
+    @if (successMsg()) {
+      <div class="alert alert-success animate-slide-down">
+        {{ successMsg() }}
+      </div>
+    }
+
+    <section class="code-input-card">
+      <div class="card-header">
+        <h3>1. Paste Python Code</h3>
+        <div class="filename-input">
+          <label for="fname">Filename:</label>
+          <input type="text" id="fname" [(ngModel)]="filename" placeholder="main.py" />
+        </div>
+      </div>
+      <div class="editor-wrapper">
+        <textarea [(ngModel)]="inputCode" placeholder="Paste your Python code here..." rows="12"></textarea>
+      </div>
+      <div class="card-actions">
+        <button class="primary-btn" [disabled]="isLoadingSuggest()" (click)="triggerRefactoring()">
+          @if (isLoadingSuggest()) {
+            <span class="spinner"></span> Analyzing code...
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+            Analyze and optimize
+          }
+        </button>
+      </div>
+    </section>
+
+    @if (refactorResult()) {
+      <section class="side-by-side-card animate-slide-down">
+        <div class="card-header">
+          <h3>2. Optimization Review</h3>
+        </div>
+
+        <div class="advisor-grid">
+          <div class="advisor-card">
+            <span class="advisor-label">Risk level</span>
+            <strong>{{ riskLevel | titlecase }}</strong>
+          </div>
+          <div class="advisor-card">
+            <span class="advisor-label">AI confidence</span>
+            <strong>{{ confidence | titlecase }}</strong>
+          </div>
+          <div class="advisor-card">
+            <span class="advisor-label">Runtime expectation</span>
+            <strong>{{ expectedRuntimeImpact }}</strong>
+          </div>
+          <div class="advisor-card">
+            <span class="advisor-label">Memory expectation</span>
+            <strong>{{ expectedMemoryImpact }}</strong>
+          </div>
+          <div class="advisor-card advisor-card-wide">
+            <span class="advisor-label">Scalability expectation</span>
+            <strong>{{ expectedScalabilityImpact }}</strong>
+          </div>
+        </div>
+
+        <div class="comparison-grid">
+          <div class="code-panel">
+            <div class="panel-lbl orig">Original script</div>
+            <pre><code>{{ inputCode }}</code></pre>
+          </div>
+          <div class="code-panel">
+            <div class="panel-lbl opt">Suggested rewrite</div>
+            <textarea [(ngModel)]="optimizedCode" rows="15"></textarea>
+          </div>
+        </div>
+
+        <div class="explanations-box">
+          <h4>Why this version may be better</h4>
+          <ul>
+            @for (exp of explanations; track $index) {
+              <li>
+                <span class="bullet-green">+</span>
+                {{ exp }}
+              </li>
+            }
+          </ul>
+          <p class="explanation-note">Review the suggested rewrite before benchmarking. You can edit it to keep the code simpler.</p>
+        </div>
+
+        <div class="run-setup-box">
+          <div class="tracker-selector">
+            <label for="tracker">Tracker:</label>
+            <select id="tracker" [(ngModel)]="selectedTracker">
+              <option value="eco2AI">eco2AI</option>
+              <option value="CodeCarbon">CodeCarbon</option>
+            </select>
+          </div>
+          <button class="benchmark-btn" [disabled]="isLoadingRun()" (click)="triggerBenchmark()">
+            @if (isLoadingRun()) {
+              <span class="spinner"></span> Running benchmark...
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Benchmark both versions
+            }
+          </button>
+        </div>
+      </section>
+    }
+
+    @if (benchmarkResult() || benchmarkFailure()) {
+      <section class="results-card animate-slide-down">
+        <div class="card-header">
+          <h3>3. Benchmark Results</h3>
+          @if (benchmarkResult() && benchmarkResult()!.job_id > 0) {
+            <button class="pdf-btn" (click)="downloadReport()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Download PDF report
+            </button>
+          }
+        </div>
+
+        @if (benchmarkResult() && benchmarkResult()!.job_id > 0) {
+          <div class="summary-highlight-card">
+            <div class="grade-section">
+              <div class="leaf-icon">GE</div>
+              <div class="grade-title">
+                <h4>Green efficiency summary</h4>
+                <p class="summary-status-text">
+                  Median runtime improved by
+                  <strong>{{ calcSavingsPercent(benchmarkResult()!.original.duration_s, benchmarkResult()!.optimized.duration_s) | number:'1.1-1' }}%</strong>,
+                  CPU time improved by
+                  <strong>{{ calcSavingsPercent(benchmarkResult()!.original.cpu_time_s, benchmarkResult()!.optimized.cpu_time_s) | number:'1.1-1' }}%</strong>,
+                  and peak memory improved by
+                  <strong>{{ calcSavingsPercent(benchmarkResult()!.original.peak_memory_mb, benchmarkResult()!.optimized.peak_memory_mb) | number:'1.1-1' }}%</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="metrics-grid metrics-grid-four">
+            <div class="metric-card">
+              <div class="metric-icon">RT</div>
+              <h4>Median runtime</h4>
+              <div class="vals">
+                <div><span>Original:</span> <b>{{ benchmarkResult()!.original.duration_s | number:'1.4-4' }} s</b></div>
+                <div><span>Optimized:</span> <b>{{ benchmarkResult()!.optimized.duration_s | number:'1.4-4' }} s</b></div>
+              </div>
+              <div class="reduction-badge" [class.positive]="calcSavingsPercent(benchmarkResult()!.original.duration_s, benchmarkResult()!.optimized.duration_s) > 0">
+                -{{ calcSavingsPercent(benchmarkResult()!.original.duration_s, benchmarkResult()!.optimized.duration_s) | number:'1.1-1' }}%
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">CPU</div>
+              <h4>CPU time</h4>
+              <div class="vals">
+                <div><span>Original:</span> <b>{{ benchmarkResult()!.original.cpu_time_s | number:'1.4-4' }} s</b></div>
+                <div><span>Optimized:</span> <b>{{ benchmarkResult()!.optimized.cpu_time_s | number:'1.4-4' }} s</b></div>
+              </div>
+              <div class="reduction-badge" [class.positive]="calcSavingsPercent(benchmarkResult()!.original.cpu_time_s, benchmarkResult()!.optimized.cpu_time_s) > 0">
+                -{{ calcSavingsPercent(benchmarkResult()!.original.cpu_time_s, benchmarkResult()!.optimized.cpu_time_s) | number:'1.1-1' }}%
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">MEM</div>
+              <h4>Peak memory</h4>
+              <div class="vals">
+                <div><span>Original:</span> <b>{{ benchmarkResult()!.original.peak_memory_mb | number:'1.2-2' }} MB</b></div>
+                <div><span>Optimized:</span> <b>{{ benchmarkResult()!.optimized.peak_memory_mb | number:'1.2-2' }} MB</b></div>
+              </div>
+              <div class="reduction-badge" [class.positive]="calcSavingsPercent(benchmarkResult()!.original.peak_memory_mb, benchmarkResult()!.optimized.peak_memory_mb) > 0">
+                -{{ calcSavingsPercent(benchmarkResult()!.original.peak_memory_mb, benchmarkResult()!.optimized.peak_memory_mb) | number:'1.1-1' }}%
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon">CO2</div>
+              <h4>Energy proxy</h4>
+              <div class="vals">
+                <div><span>Original:</span> <b>{{ benchmarkResult()!.original.power_kwh | number:'1.6-6' }} kWh</b></div>
+                <div><span>Optimized:</span> <b>{{ benchmarkResult()!.optimized.power_kwh | number:'1.6-6' }} kWh</b></div>
+              </div>
+              <div class="reduction-badge" [class.positive]="calcSavingsPercent(benchmarkResult()!.original.power_kwh, benchmarkResult()!.optimized.power_kwh) > 0">
+                -{{ calcSavingsPercent(benchmarkResult()!.original.power_kwh, benchmarkResult()!.optimized.power_kwh) | number:'1.1-1' }}%
+              </div>
+            </div>
+          </div>
+
+          <div class="benchmark-insights-grid">
+            <div class="insight-card">
+              <h4>Original benchmark shape</h4>
+              <p>Measured runs: <b>{{ benchmarkResult()!.original.benchmark_summary.measured_runs }}</b></p>
+              <p>Best run: <b>{{ benchmarkResult()!.original.benchmark_summary.wall_time_best_s | number:'1.4-4' }} s</b></p>
+              <p>P95 run: <b>{{ benchmarkResult()!.original.benchmark_summary.wall_time_p95_s | number:'1.4-4' }} s</b></p>
+            </div>
+            <div class="insight-card">
+              <h4>Optimized benchmark shape</h4>
+              <p>Measured runs: <b>{{ benchmarkResult()!.optimized.benchmark_summary.measured_runs }}</b></p>
+              <p>Best run: <b>{{ benchmarkResult()!.optimized.benchmark_summary.wall_time_best_s | number:'1.4-4' }} s</b></p>
+              <p>P95 run: <b>{{ benchmarkResult()!.optimized.benchmark_summary.wall_time_p95_s | number:'1.4-4' }} s</b></p>
+            </div>
+            <div class="insight-card">
+              <h4>Adoption guidance</h4>
+              <p>Risk level: <b>{{ benchmarkResult()!.risk_level | titlecase }}</b></p>
+              <p>AI confidence: <b>{{ benchmarkResult()!.confidence | titlecase }}</b></p>
+              <p>Recommended when this path runs repeatedly or at larger input sizes.</p>
+            </div>
+          </div>
+
+          <div class="equivalence-box">
+            <h4>Scale this to real usage</h4>
+            <div class="projection-controls">
+              <div class="projection-field">
+                <label for="runsPerDay">Runs per day</label>
+                <input id="runsPerDay" type="number" min="1" [(ngModel)]="projectedRunsPerDay" />
+              </div>
+              <div class="projection-field">
+                <label for="deploymentType">Environment</label>
+                <select id="deploymentType" [(ngModel)]="deploymentType">
+                  <option value="local_workstation">Local workstation</option>
+                  <option value="shared_server">Shared server</option>
+                  <option value="cloud_vm">Cloud VM</option>
+                  <option value="serverless">Serverless</option>
+                </select>
+              </div>
+              <button class="nav-btn" type="button" (click)="refreshImpactSimulation()">Refresh estimate</button>
+            </div>
+
+            @if (impactSimulation()) {
+              <div class="projection-summary">
+                <div class="projection-chip">
+                  <span>Impact band</span>
+                  <b>{{ impactSimulation()!.impact_band | titlecase }}</b>
+                </div>
+                <div class="projection-chip">
+                  <span>Yearly time saved</span>
+                  <b>{{ impactSimulation()!.estimated_time_saved_per_year_hours | number:'1.1-1' }} hours</b>
+                </div>
+                <div class="projection-chip">
+                  <span>Yearly energy proxy</span>
+                  <b>{{ impactSimulation()!.estimated_energy_proxy_saved_per_year_kwh | number:'1.2-2' }} kWh</b>
+                </div>
+                <div class="projection-chip">
+                  <span>Yearly cost proxy</span>
+                  <b>${{ impactSimulation()!.estimated_cost_proxy_saved_per_year_usd | number:'1.2-2' }}</b>
+                </div>
+              </div>
+              <p class="projection-copy">{{ impactSimulation()!.summary }}</p>
+            }
+          </div>
+
+        } @else if (benchmarkFailure()) {
+          <div class="alert alert-error">
+            <b>Benchmark could not run.</b> The {{ benchmarkFailure()!.failedVersion }} version needs a quick fix first.
+          </div>
+          <div class="failure-card">
+            <h4>Most likely issue</h4>
+            <p>{{ benchmarkFailure()!.errorSummary }}</p>
+            <p class="failure-note">Adjust the code and run the benchmark again.</p>
+          </div>
+        }
+      </section>
+    }
+  </main>
+</div>

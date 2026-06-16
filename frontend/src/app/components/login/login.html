@@ -1,0 +1,60 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo-area">
+      <div class="leaf-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Z"/>
+          <path d="M9 22v-4H5v-4H1"/>
+        </svg>
+      </div>
+      <h2>EcoRefactor</h2>
+      <p class="subtitle">AI-Powered Carbon-Efficient Code Optimizer</p>
+    </div>
+
+    <!-- Alert Banners -->
+    @if (errorMsg()) {
+      <div class="alert alert-error">
+        {{ errorMsg() }}
+      </div>
+    }
+    @if (successMsg()) {
+      <div class="alert alert-success">
+        {{ successMsg() }}
+      </div>
+    }
+
+    <!-- Tab Selection -->
+    <div class="tabs">
+      <button [class.active]="isLoginMode()" (click)="!isLoginMode() && toggleMode()">Log In</button>
+      <button [class.active]="!isLoginMode()" (click)="isLoginMode() && toggleMode()">Sign Up</button>
+    </div>
+
+    <!-- Form Submit -->
+    <form (ngSubmit)="onSubmit()">
+      @if (!isLoginMode()) {
+        <div class="form-group animate-slide-down">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" [(ngModel)]="name" placeholder="Enter your full name" required />
+        </div>
+      }
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="you@domain.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner"></span> Processing...
+        } @else {
+          {{ isLoginMode() ? 'Log In to Dashboard' : 'Create Account' }}
+        }
+      </button>
+    </form>
+  </div>
+</div>

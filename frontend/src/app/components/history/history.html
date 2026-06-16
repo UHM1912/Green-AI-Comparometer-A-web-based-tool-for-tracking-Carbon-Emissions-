@@ -1,0 +1,105 @@
+<div class="history-container">
+  <header class="app-header">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Z"/>
+        <path d="M9 22v-4H5v-4H1"/>
+      </svg>
+      <h1>EcoRefactor</h1>
+    </div>
+    <div class="user-menu">
+      <span class="user-greeting">Welcome, <b>{{ authService.currentUser()?.name }}</b></span>
+      <button class="nav-btn" (click)="goToWorkspace()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Workspace
+      </button>
+      <button class="logout-btn" (click)="logout()">Log Out</button>
+    </div>
+  </header>
+
+  <main class="history-main">
+    <div class="history-card">
+      <div class="card-header">
+        <h3>Performance Optimization History</h3>
+        <button class="refresh-btn" (click)="fetchHistory()">Refresh</button>
+      </div>
+
+      @if (errorMsg()) {
+        <div class="alert alert-error">
+          {{ errorMsg() }}
+        </div>
+      }
+
+      @if (isLoading()) {
+        <div class="loading-state">
+          <span class="spinner"></span> Loading runs...
+        </div>
+      } @else if (historyList().length === 0) {
+        <div class="empty-state">
+          <p>No historical runs found. Run a benchmark in the workspace to get started.</p>
+          <button class="primary-btn" (click)="goToWorkspace()">Optimize code now</button>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>File</th>
+                <th>Runtime</th>
+                <th>Peak Memory</th>
+                <th>CO2 Proxy</th>
+                <th>Review Signal</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (job of historyList(); track job.id) {
+                <tr>
+                  <td>{{ job.timestamp }}</td>
+                  <td><b>{{ job.filename }}</b></td>
+                  <td>
+                    <div class="saving-cell">
+                      <span>{{ job.original_duration | number:'1.4-4' }} s -> {{ job.optimized_duration | number:'1.4-4' }} s</span>
+                      <span class="badge" [class.positive]="calcSavingsPercent(job.original_duration, job.optimized_duration) > 0">
+                        -{{ calcSavingsPercent(job.original_duration, job.optimized_duration) | number:'1.1-1' }}%
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="saving-cell">
+                      <span>{{ job.original_peak_memory_mb | number:'1.2-2' }} MB -> {{ job.optimized_peak_memory_mb | number:'1.2-2' }} MB</span>
+                      <span class="badge" [class.positive]="calcSavingsPercent(job.original_peak_memory_mb, job.optimized_peak_memory_mb) > 0">
+                        -{{ calcSavingsPercent(job.original_peak_memory_mb, job.optimized_peak_memory_mb) | number:'1.1-1' }}%
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="saving-cell">
+                      <span>{{ job.original_co2 | number:'1.5-5' }} kg -> {{ job.optimized_co2 | number:'1.5-5' }} kg</span>
+                      <span class="badge" [class.positive]="calcSavingsPercent(job.original_co2, job.optimized_co2) > 0">
+                        -{{ calcSavingsPercent(job.original_co2, job.optimized_co2) | number:'1.1-1' }}%
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="saving-cell">
+                      <span>Risk {{ job.risk_level || 'unknown' }} | Confidence {{ job.confidence || 'unknown' }}</span>
+                      <span class="badge positive">{{ job.benchmark_runs || 0 }} measured runs</span>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="row-download-btn" (click)="downloadReport(job.id, job.filename)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                      PDF Report
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </main>
+</div>
