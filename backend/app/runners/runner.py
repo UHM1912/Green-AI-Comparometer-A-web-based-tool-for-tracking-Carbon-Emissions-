@@ -13,8 +13,8 @@ logger = logging.getLogger("EcoRefactor.runners.runner")
 
 BACKEND_ROOT = Path(__file__).resolve().parent.parent.parent
 SESSIONS_DIR = BACKEND_ROOT / "temp_sessions"
-WARMUP_RUNS = 1
-MEASURED_RUNS = 3
+WARMUP_RUNS = 0
+MEASURED_RUNS = 1
 RUN_TIMEOUT_SECONDS = 180
 
 
@@ -58,16 +58,22 @@ from eco2ai import Tracker
 tracker = Tracker(
     project_name="EcoRefactor",
     experiment_description="Sandbox eco2AI Execution",
-    file_name="my_emission.csv"
+    file_name="my_emission.csv",
+    alpha_2_code="US",
+    ignore_warnings=True
 )
 """).strip()
         tracker_stop = "tracker.stop()"
         tracker_file_name = "my_emission.csv"
     elif tracker_type_lower == "codecarbon":
         tracker_import = dedent("""
-from codecarbon import EmissionsTracker
+from codecarbon import OfflineEmissionsTracker
 
-tracker = EmissionsTracker(output_file="emissions.csv")
+tracker = OfflineEmissionsTracker(
+    country_iso_code="USA",
+    output_file="emissions.csv",
+    log_level="error"
+)
 """).strip()
         tracker_stop = "tracker.stop()"
         tracker_file_name = "emissions.csv"
