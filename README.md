@@ -1,4 +1,4 @@
-# 🌱 EcoRefactor
+# EcoRefactor
 
 **EcoRefactor** is a unified platform to measure, compare, and reduce the carbon footprint of ML/DL code using multiple local carbon tracking tools.
 
@@ -6,7 +6,7 @@ It analyzes your Python code or Jupyter Notebooks, queries the Gemini API for pe
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 * **LLM-Powered Refactoring**: Connects to the Gemini API (`gemini-2.5-flash`) to generate structured code optimization suggestions.
 * **Offline Sandbox Benchmarking**: Runs both original and optimized code in a sandboxed subprocess environment using:
@@ -19,7 +19,7 @@ It analyzes your Python code or Jupyter Notebooks, queries the Gemini API for pe
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Frontend**: Angular 22, Vanilla CSS
 * **Backend**: FastAPI, SQLite, Pydantic, ReportLab (for PDF generation)
@@ -28,7 +28,7 @@ It analyzes your Python code or Jupyter Notebooks, queries the Gemini API for pe
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 * Python 3.13 or newer
@@ -90,7 +90,7 @@ It analyzes your Python code or Jupyter Notebooks, queries the Gemini API for pe
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 ├── backend/
